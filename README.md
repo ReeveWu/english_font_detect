@@ -4,4 +4,4 @@
 
 ## How to run this projest：
 * run main.py
-* downloadihitu
+* download the 
