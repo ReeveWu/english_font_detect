@@ -19,7 +19,7 @@ for i in range(0, 2):
         Y_test = np.concatenate((Y_test, Y_test_tmp), axis=0)
     l1 = 97
     l2 = 123
-
+#打亂資料
 X_train, Y_train = data_shuffle(X_train, Y_train)
 X_train = X_train.astype('float32') / 255
 X_train = np.expand_dims(X_train, -1)
@@ -29,7 +29,7 @@ X_test, Y_test = data_shuffle(X_test, Y_test)
 X_test = X_test.astype('float32') / 255
 X_test = np.expand_dims(X_test, -1)
 Y_test = to_categorical(Y_test)
-
+#當訓練結果不理想則提早結束
 callback = EarlyStopping(monitor="val_loss", patience=15)
 
 network = Sequential([
@@ -64,7 +64,7 @@ loss, accuracy = network.evaluate(X_test, Y_test, verbose=0)
 print("測試資料集的準確度 = {:.2f}".format(accuracy))
 
 network.save("letter_all.h5")
-
+#顯示loss曲線
 loss = history.history["loss"]
 epochs = range(1, len(loss)+1)
 val_loss = history.history["val_loss"]
