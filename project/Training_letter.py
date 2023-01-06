@@ -8,10 +8,10 @@ from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, LearningR
 from load_data import load_data, data_shuffle
 from tensorflow.keras.optimizers import Adam
 
-#載入資料集
+# 載入資料集
 X_train, Y_train, X_test, Y_test = load_data()
 
-#資料預處理
+# 資料預處理
 X_train, Y_train = data_shuffle(X_train, Y_train)
 X_train = X_train.astype('float32') / 255
 X_train = np.expand_dims(X_train, -1)
@@ -22,11 +22,11 @@ X_test = X_test.astype('float32') / 255
 X_test = np.expand_dims(X_test, -1)
 Y_test = to_categorical(Y_test)
 
-#設定callback
+# 設定callback
 earlystopper = EarlyStopping(monitor="val_loss", patience=70)   #70個epoch後若val_loss沒下降停止訓練
 checkpointer = ModelCheckpoint('all_model.h5', monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False)  #儲存最佳準確度模型
 
-#建立模型
+# 建立模型
 network = Sequential([
     Conv2D(32, (3, 3), input_shape=(100, 100, 1), padding='same', activation='relu'),
     Conv2D(32, (5, 5), activation='relu', padding='same'),
@@ -50,7 +50,7 @@ network = Sequential([
     Dense(Y_train.shape[1], activation='softmax')
 ])
 
-#開始訓練
+# 開始訓練
 network.compile(optimizer=Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0), loss='categorical_crossentropy', metrics=['accuracy'])
 print(network.summary())
 
