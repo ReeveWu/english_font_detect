@@ -5,6 +5,8 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from dictionary import *
 
+screenshot_state = False
+
 # 初始引導畫面
 def win_work():
     width = 700
@@ -28,6 +30,8 @@ def win_work():
 
     # 按下截圖按鍵關閉視窗
     def finish():
+        global screenshot_state
+        screenshot_state = True
         win.destroy()
 
     Screenshot = tk.Button(text='screenshot', font="Georgia 12")
