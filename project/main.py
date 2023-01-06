@@ -40,7 +40,10 @@ top_idx = predict_total.argsort()[-1:-4:-1]
 predict_total = predict_total/len(predict_all)
 TopBER = predict_total[top_idx]
 #顯示結果
-show_predict(top_idx, TopBER)
+try:
+    show_predict(top_idx, TopBER)
+except:
+    pass
 
 #將過程中所有暫存資料夾刪除
 if os.path.exists('fonts'):
