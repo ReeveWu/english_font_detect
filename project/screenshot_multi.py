@@ -3,7 +3,7 @@ import cv2
 import time
 import numpy as np
 from pyautogui import screenshot
-from final_resut_GUI import win_work
+import final_resut_GUI
 
 
 base_dir = "origin/"
@@ -18,8 +18,12 @@ min_val = 10
 min_range = 30
 
 # 顯示引導畫面
-win_work()
+final_resut_GUI.win_work()
 time.sleep(0.2)
+
+if final_resut_GUI.screenshot_state == False:
+    os.rmdir('final_result')
+    os._exit(0)
 
 #建立暫存資料夾
 try:
