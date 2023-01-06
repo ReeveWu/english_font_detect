@@ -7,7 +7,6 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 #生成延伸資料集-針對原圖縮放並移動成為新的資料
-
 datagen = ImageDataGenerator(
         rescale=0.9,
         width_shift_range=0.15,
@@ -16,7 +15,7 @@ datagen = ImageDataGenerator(
 
 file_list = [file for file in os.listdir('dataset/train') if '_Augmentation' not in file]
 for file in file_list:
-    if 'Bold' in file:
+    if 'Bold' in file:  # 'Bold' & 'Normal'
         ASCII = 65 if 'Capital' in file else 97
         for i in range(ASCII, ASCII+26):
             try:
@@ -45,4 +44,3 @@ for file in file_list:
                             break
             except:
                 print('\n'+file+'_Augmentation already exist.')
-
