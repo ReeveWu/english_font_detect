@@ -5,6 +5,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from dictionary import *
 
+# 初始引導畫面
 def win_work():
     width = 700
     height = 240
@@ -25,6 +26,7 @@ def win_work():
     text_lb.config(justify="center")
     text_lb.place(x=73, y=40)
 
+    # 按下截圖按鍵關閉視窗
     def finish():
         win.destroy()
 
@@ -39,9 +41,12 @@ def win_work():
 state = True
 target_font = []
 
+# 顯示辨識結果畫面
 def show_predict(top_idx, TopBER):
+    # 讀入辨識準確度前三高的字體資訊
     for index in top_idx:
         target_font.append(category2font[index])
+    # 建立資料夾顯示推薦字體的.ttf檔
     def show_fonts():
         load = tk.Label(fg="black", text='loading...')
         load.config(font="Georgia 12", width=39)
@@ -49,14 +54,15 @@ def show_predict(top_idx, TopBER):
         load.place(x=10, y=435)
         global state
         if state:
+            # 建立字體資料夾
             if os.path.exists('fonts'):
                 for fileName in os.listdir('fonts'):
                     os.remove('fonts/' + fileName)
                 os.rmdir('fonts')
-
             font_list = os.listdir('project_fonts/Single')
             font_list = font_list + os.listdir('project_fonts/Diversity')
             os.mkdir('fonts')
+            # 讀取推薦字體
             for name in target_font:
                 for i in font_list:
                     if name in i:
@@ -79,7 +85,8 @@ def show_predict(top_idx, TopBER):
         else:
             os.system("explorer.exe %s" % r'fonts')
         load.destroy()
-
+    
+    # 載入截圖結果
     img = cv2.imread('origin/output.png', -1)
     size = 70/img.shape[0]
     img = cv2.resize(img, None, fx=size, fy=size, interpolation=cv2.INTER_CUBIC)
@@ -91,7 +98,8 @@ def show_predict(top_idx, TopBER):
 
     width = 490
     height =500
-
+    
+    # 定義顯示視窗
     win=tk.Tk()
     win.title("Detection Results")
     win.resizable(0, 0)
@@ -102,7 +110,8 @@ def show_predict(top_idx, TopBER):
     x = (screen_width/2) - (width/2)
     y = (screen_height/2) - (height/2)
     win.geometry('%dx%d+%d+%d' % (width, height, x, y))
-
+    
+    # 顯示原始截圖圖像
     img = Image.open('origin/output.png')
     tk_img = ImageTk.PhotoImage(img)
     top_distance = (80-pos)/2
@@ -111,18 +120,22 @@ def show_predict(top_idx, TopBER):
 
     canvas.create_line(0, top_distance, 550, top_distance, width=1, fill='gray',  dash=(4, 1))
     canvas.pack(fill='x')
-
+    
+    #標題
     text1 = tk.Label(fg="black", text='The top 3 most similar:')
     text1.config(font="Georgia 14 underline")
     text1.config(justify="left")
     text1.place(x=10,y=105)
-
+    
+    # 分別顯示準確度前三高的字體名稱、準確度、Demo
+    # f:字體名稱
     f1 = target_font[0]
     font1 = tk.Label(fg="black", text='1. {0}.ttf'.format(f1))
     font1.config(font="Georgia 12")
     font1.config(justify="left")
     font1.place(x=10, y=145)
-
+    
+    # a:準確度
     a1 = float('{0:.2f}'.format(TopBER[0]))*100.0
     acc1 = tk.Label(fg="black", text='-- {0:.2f} %'.format(a1))
     acc1.config(font="Georgia 12", width=13)
@@ -131,7 +144,8 @@ def show_predict(top_idx, TopBER):
 
     list_of_key = list(number2category.keys())
     list_of_value = list(number2category.values())
-
+    
+    # Demo圖像
     i = list_of_key[list_of_value.index(top_idx[0])]
     i = str(i).zfill(2)
     img = Image.open('fonts_demo/fonts_demo-{0}.png'.format(i))
@@ -176,13 +190,15 @@ def show_predict(top_idx, TopBER):
     f3_img = ImageTk.PhotoImage(img)
     f3_demo = tk.Label(win, image=f3_img)
     f3_demo.place(x=10, y=325)
-
+    
+    #顯示字體檔案按鈕
     open = tk.Button(text='Open the fonts', font="Georgia 14")
     open.config(fg="black", relief='ridge')
     open.config(width=32)
     open.config(command=show_fonts)
     open.place(x=10, y=380)
-
+    
+    #無法辨識(原始圖像過於模糊)警告文字
     if not np.min(TopBER) >= 0:
         load = tk.Label(fg="red", text='Less accurate identification results.\n'
                                        '(It is possible that the texts obtained are too blurry or crowded.)')
