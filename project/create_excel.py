@@ -1,3 +1,6 @@
+"""
+建立Ecxel儲存字體和編號，供生成資料及和建立對照字典使用
+"""
 import os
 import openpyxl
 
