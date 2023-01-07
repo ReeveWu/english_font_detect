@@ -153,7 +153,7 @@ def adjust_img(img, num0, num1):
     size = 100 / img.shape[num0]
     img = cv2.resize(img, None, fx=size, fy=size, interpolation=cv2.INTER_AREA)
     img = _img_normalization(img)
-    if np.min(img) > 60:
+    if np.min(img) > 80:
         img[img < 255] = 0
     img[img > 220] = 255
     img[img < 50] = 0
