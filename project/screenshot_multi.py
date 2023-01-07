@@ -181,8 +181,3 @@ for fileName in os.listdir(dst_dir):
     img = cv2.imread(dst_dir+fileName, 0)
     img = processing(img)
     cv2.imwrite(dst1_dir+fileName, img)
-
-print("\nImage processing has done. ")
-
-# https://steam.oxxostudio.tw/category/python/ai/opencv-mouse-mosaic.html
-# https://blog.51cto.com/u_12630471/3704717
