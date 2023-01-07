@@ -54,7 +54,6 @@ def show_xy(event,x,y,flags,param):
             cv2.imshow('show', img2)
             mouse_state = True
     if event == 4 and mouse_state:
-        print('ok')
         img_ = img[dot1[1]:dot2[1], dot1[0]:dot2[0]]
         #存取ROI至其一暫存資料夾
         cv2.imwrite(base_dir+'output.png', img_)
