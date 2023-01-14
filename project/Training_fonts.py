@@ -35,7 +35,7 @@ Y_test = to_categorical(Y_test)
 
 # 設定callback
 earlystopper = EarlyStopping(monitor="val_loss", patience=70)   #70個epoch後若val_loss沒下降停止訓練
-checkpointer = ModelCheckpoint('letter_all.h5', monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=False)   #儲存最佳準確度模型
+checkpointer = ModelCheckpoint('letter_all.h5', monitor='val_accuracy', verbose=1, save_best_only=True, save_weights_only=False)   #儲存最佳準確度模型
 
 # 建立模型
 network = Sequential([
