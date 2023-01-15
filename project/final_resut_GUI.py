@@ -93,7 +93,7 @@ def show_predict(top_idx, TopBER):
     height =500
 
     win=tk.Tk()
-    win.title("Identification Results")
+    win.title("Detection Results")
     win.resizable(0, 0)
 
     canvas = tk.Canvas(height=5)
