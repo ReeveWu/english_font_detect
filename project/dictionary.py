@@ -1,3 +1,6 @@
+"""
+建立字體與標籤對應字典，用於載入資料集與結果輸出
+"""
 from create_excel import*
 
 number2category = {}

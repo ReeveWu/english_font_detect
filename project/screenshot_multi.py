@@ -3,7 +3,7 @@ import cv2
 import time
 import numpy as np
 from pyautogui import screenshot
-from final_resut_GUI import win_work
+import final_resut_GUI
 
 
 base_dir = "origin/"
@@ -17,9 +17,15 @@ create_file = [base_dir, dst_dir, dst1_dir]
 min_val = 10
 min_range = 30
 
-win_work()
+# 顯示引導畫面
+final_resut_GUI.win_work()
 time.sleep(0.2)
 
+if final_resut_GUI.screenshot_state == False:
+    os.rmdir('final_result')
+    os._exit(0)
+
+#建立暫存資料夾
 try:
     for file in create_file:
         if not os.path.exists(file):
@@ -27,13 +33,15 @@ try:
 except:
     pass
 
+#螢幕截圖
 img = screenshot()
 img.save('screenshot.png')
 img = cv2.imread('screenshot.png', -1)
 
 mouse_state = False
 
-dots = []   # 記錄座標的空串列
+# 取得選取ROI範圍
+dots = []
 def show_xy(event,x,y,flags,param):
     global dot1, dot2, img, img2, mouse_state
     if flags == 1:
@@ -46,17 +54,20 @@ def show_xy(event,x,y,flags,param):
             cv2.imshow('show', img2)
             mouse_state = True
     if event == 4 and mouse_state:
-        print('ok')
         img_ = img[dot1[1]:dot2[1], dot1[0]:dot2[0]]
+        #存取ROI至其一暫存資料夾
         cv2.imwrite(base_dir+'output.png', img_)
         cv2.destroyAllWindows()
 
+# 顯示螢幕截圖        
 weidth = int(img.shape[1]/1.2)
 height = int(img.shape[0]/1.2)
 cv2.namedWindow('show', 0)
 cv2.resizeWindow('show', weidth, height)
 
 cv2.imshow('show', img)
+
+# 等待取得ROI
 cv2.setMouseCallback('show', show_xy)
 
 cv2.waitKey(0)
@@ -64,10 +75,10 @@ cv2.destroyAllWindows()
 
 os.remove('screenshot.png')
 
+#讀取辨識圖片
 img = cv2.imread(base_dir+'output.png', 0)
 
 count = 0
-
 def clean_file():
     for file in create_file:
         for fileName in os.listdir(file):
@@ -104,6 +115,7 @@ def cutImage(img):
             img1 = img[y:peek_range[1], x:vertical_range[1]]
             cv2.imwrite(dst_dir + str(count) + ".png", img1)
 
+#圖片字母分割並存入指定暫存資料夾
 for i in range(0, 1):
     for fileName in os.listdir(base_dir):
         img = cv2.imread(base_dir + fileName)
@@ -131,15 +143,17 @@ for i in range(0, 1):
             vertical_peek_ranges2d.append(vertical_peek_ranges)
         cutImage(img)
 
+# 將圖像像素等比縮放至0~255
 def _img_normalization(img):
     _range = np.max(img) - np.min(img)
     return ((img - np.min(img)) / _range) * 255
 
+# 圖像強化對比、padding大小運算
 def adjust_img(img, num0, num1):
     size = 100 / img.shape[num0]
     img = cv2.resize(img, None, fx=size, fy=size, interpolation=cv2.INTER_AREA)
     img = _img_normalization(img)
-    if np.min(img) > 60:
+    if np.min(img) > 80:
         img[img < 255] = 0
     img[img > 220] = 255
     img[img < 50] = 0
@@ -147,6 +161,7 @@ def adjust_img(img, num0, num1):
     pad2 = 100 - pad1 - img.shape[num1]
     return img, pad1, pad2
 
+# 使圖像調整至模型輸入大小
 def processing(img):
     if img.shape[0] >= img.shape[1]:
         img, pad1, pad2 = adjust_img(img, 0, 1)
@@ -161,12 +176,8 @@ def processing(img):
 
     return img
 
+# 依次讀入圖像進行資料預處理（調整尺寸、影像強化）
 for fileName in os.listdir(dst_dir):
     img = cv2.imread(dst_dir+fileName, 0)
     img = processing(img)
     cv2.imwrite(dst1_dir+fileName, img)
-
-print("\nImage processing has done. ")
-
-# https://steam.oxxostudio.tw/category/python/ai/opencv-mouse-mosaic.html
-# https://blog.51cto.com/u_12630471/3704717
